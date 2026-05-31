@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Whimzy Nights — Magical bedtime stories for children in Algeria. Pay with Edahabia or Baridimob. قصص ليلية سحرية للأطفال."/>
+  <title>Whimzy Nights 🌙 Magical Bedtime Stories</title>
+
+  <!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  FONTS                                                       ║
+  ║  Cormorant Garamond → elegant serif for headings            ║
+  ║  Plus Jakarta Sans  → modern, readable body font            ║
+  ╚══════════════════════════════════════════════════════════════╝
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       ★  DESIGN TOKENS
+       Change these values to re-brand the whole site instantly.
+    ══════════════════════════════════════════════════════════ */
+    :root {
+      /* ── Core Palette ── */
+      --navy:          #080e20;   /* deepest background           */
+      --navy-2:        #0f1a35;   /* section backgrounds          */
+      --navy-3:        #162040;   /* card backgrounds             */
+      --navy-4:        #1c2b52;   /* hover states                 */
+
+      --gold:          #f2c94c;   /* primary accent               */
+      --gold-bright:   #ffd97a;   /* highlights                   */
+      --gold-dim:      #b8922a;   /* shadows / muted gold         */
+      --gold-glow:     rgba(242,201,76,0.25);
+
+      --cream:         #fef9ee;   /* main text                    */
+      --cream-2:       #e8dfc7;   /* secondary text               */
+      --muted:         #7a8db0;   /* placeholder / meta text      */
+      --border:        rgba(242,201,76,0.15);
+      --border-hover:  rgba(242,201,76,0.45);
+
+      --mint:          #4cc9b0;   /* free badge / read btn        */
+      --rose:          #e87373;   /* alert / error                */
+
+      /* ── Typography ── */
+      --font-display:  'Cormorant Garamond', Georgia, serif;
+      --font-body:     'Plus Jakarta Sans', sans-serif;
+
+      /* ── Spacing / Shape ── */
+      --radius:        20px;
+      --radius-sm:     12px;
+      --radius-pill:   100px;
+      --shadow-card:   0 8px 40px rgba(0,0,0,0.45);
+      --shadow-glow:   0 0 40px rgba(242,201,76,0.20);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  RESET
+    ══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--navy);
+      color: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+    a   { color: inherit; text-decoration: none; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  ANIMATED STAR FIELD  (pure canvas — no libraries)
+    ══════════════════════════════════════════════════════════ */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Atmospheric purple nebula overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(90,60,160,0.30) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 60% at 100% 80%, rgba(8,14,32,0.85)   0%, transparent 55%);
+    }
+
+    /* Everything sits above canvas + overlay */
+    nav, header, section, footer, .modal-overlay { position: relative; z-index: 10; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  NAVIGATION
+    ══════════════════════════════════════════════════════════ */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      backdrop-filter: blur(16px);
+      background: rgba(8,14,32,0.75);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Logo icon (replace with <img src="logo.png"> later) ── */
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px var(--gold-glow);
+      flex-shrink: 0;
+      /*
+        TO USE YOUR OWN LOGO IMAGE:
+        1. Put your logo file (e.g. logo.png) in the same folder as index.html
+        2. Delete this whole .logo-mark block
+        3. Replace <div class="logo-mark">🦉</div> in the HTML with:
+           <img src="logo.png" alt="Whimzy Nights" style="height:42px; border-radius:10px;">
+      */
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: 0.2px;
+    }
+    .brand-name span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold-bright); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      color: var(--navy) !important;
+      padding: 9px 22px;
+      border-radius: var(--radius-pill);
+      font-weight: 800 !important;
+      font-size: 0.85rem !important;
+      box-shadow: 0 4px 20px var(--gold-glow);
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(242,201,76,0.45) !important;
+    }
+
+    /* Hide nav links on mobile — hamburger optional later */
+    @media (max-width: 660px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  HERO SECTION
+    ══════════════════════════════════════════════════════════ */
+    header {
+      text-align: center;
+      padding: 88px 24px 72px;
+    }
+
+    /* Glowing animated moon + owl mascot */
+    .hero-moon {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 36px;
+    }
+
+    .moon-circle {
+      width: 130px;
+      height: 130px;
+      margin: 0 auto;
+      background: radial-gradient(circle at 38% 32%, var(--gold-bright), var(--gold-dim));
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 3.6rem;
+      box-shadow:
+        0 0 0   10px rgba(242,201,76,0.07),
+        0 0 0   25px rgba(242,201,76,0.05),
+        0 0 60px 5px rgba(242,201,76,0.30);
+      animation: pulse-moon 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-moon {
+      0%, 100% { box-shadow: 0 0 0 10px rgba(242,201,76,0.07), 0 0 60px 5px rgba(242,201,76,0.30); }
+      50%       { box-shadow: 0 0 0 18px rgba(242,201,76,0.05), 0 0 90px 8px rgba(242,201,76,0.45); }
+    }
+
+    /* Tiny orbiting sparkles */
+    .sparkle {
+      position: absolute;
+      font-size: 1rem;
+      animation: spin-orbit var(--dur, 7s) linear infinite;
+      animation-delay: var(--delay, 0s);
+    }
+    .sparkle:nth-child(2) { top: -6px;  right:  4px;  --dur: 6s; --delay: 0s;   font-size: 0.9rem; }
+    .sparkle:nth-child(3) { bottom: 0;  left:   2px;  --dur: 9s; --delay: -3s;  font-size: 0.7rem; }
+    .sparkle:nth-child(4) { top: 40%;   right: -8px;  --dur: 8s; --delay: -5s;  font-size: 0.75rem; }
+
+    @keyframes spin-orbit {
+      from { transform: rotate(0deg)   translateX(12px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(12px) rotate(-360deg); }
+    }
+
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--cream);
+      margin-bottom: 22px;
+    }
+    .hero-headline em { color: var(--gold); font-style: italic; }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      font-weight: 300;
+      color: var(--cream-2);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      line-height: 1.75;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+    }
+
+    /* Trust strip */
+    .trust-row {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .trust-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    /* Payment method chips in trust row */
+    .trust-chip.payment {
+      background: rgba(242,201,76,0.08);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      color: var(--gold-bright);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  SHARED BUTTON STYLES
+    ══════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.22s, box-shadow 0.22s, background 0.22s;
+      min-height: 48px; /* accessibility: large enough tap target */
+      white-space: nowrap;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      color: var(--navy);
+      box-shadow: 0 5px 22px var(--gold-glow);
+    }
+    .btn-gold:hover  { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(242,201,76,0.50); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--cream);
+      border: 2px solid var(--border-hover);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .btn-mint {
+      background: linear-gradient(135deg, #4cc9b0, #2da892);
+      color: white;
+      box-shadow: 0 5px 22px rgba(76,201,176,0.30);
+    }
+    .btn-mint:hover  { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(76,201,176,0.45); }
+
+    .btn-sm { padding: 9px 20px; font-size: 0.84rem; min-height: 38px; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  SECTION WRAPPER
+    ══════════════════════════════════════════════════════════ */
+    .section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-title h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .gold-divider {
+      width: 52px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  FILTER PILLS  (story browser)
+    ══════════════════════════════════════════════════════════ */
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      padding: 8px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      min-height: 36px;
+      backdrop-filter: blur(6px);
+      font-family: var(--font-body);
+    }
+    .pill:hover  { border-color: var(--gold-bright); color: var(--gold-bright); }
+    .pill.active { background: rgba(242,201,76,0.13); border-color: var(--gold); color: var(--gold); }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  STORY CARDS GRID
+    ══════════════════════════════════════════════════════════ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── Card Shell ── */
+    .story-card {
+      background: var(--navy-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.26s ease, border-color 0.26s ease, box-shadow 0.26s ease;
+      animation: rise 0.5s ease both;
+    }
+
+    .story-card:nth-child(1) { animation-delay: 0.05s; }
+    .story-card:nth-child(2) { animation-delay: 0.12s; }
+    .story-card:nth-child(3) { animation-delay: 0.19s; }
+    .story-card:nth-child(4) { animation-delay: 0.26s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0px);  }
+    }
+
+    .story-card:hover {
+      transform: translateY(-7px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-card), var(--shadow-glow);
+    }
+
+    .story-card.premium { border-color: rgba(242,201,76,0.22); }
+
+    /* ── Card Banner (top illustration area) ── */
+    .card-banner {
+      height: 155px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      font-size: 4.2rem;
+      overflow: hidden;
+    }
+
+    /* Light shimmer on banner top */
+    .card-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(242,201,76,0.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Banner colour variants — add more as needed */
+    .b-violet  { background: linear-gradient(145deg, #1b0f45 0%, #3a1f80 100%); }
+    .b-ocean   { background: linear-gradient(145deg, #061830 0%, #0d4270 100%); }
+    .b-forest  { background: linear-gradient(145deg, #062010 0%, #115530 100%); }
+    .b-rose    { background: linear-gradient(145deg, #300a20 0%, #7a1840 100%); }
+    .b-amber   { background: linear-gradient(145deg, #1e0e00 0%, #6a3800 100%); }
+    .b-slate   { background: linear-gradient(145deg, #0f1520 0%, #223050 100%); }
+
+    /* ── Badges ── */
+    .badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      z-index: 2;
+    }
+    .badge-free    { background: rgba(76,201,176,0.2);  color: var(--mint);  border: 1px solid rgba(76,201,176,0.3);  }
+    .badge-premium { background: rgba(242,201,76,0.15); color: var(--gold);  border: 1px solid rgba(242,201,76,0.30); }
+    .badge-soon    { background: rgba(122,141,176,0.15); color: var(--muted); border: 1px solid rgba(122,141,176,0.25); }
+
+    /* Lock icon */
+    .lock-dot {
+      position: absolute;
+      top: 12px; left: 12px;
+      width: 28px; height: 28px;
+      background: rgba(8,14,32,0.7);
+      border: 1px solid rgba(242,201,76,0.2);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 0.78rem;
+      z-index: 2;
+    }
+
+    /* Mini tags at banner bottom */
+    .banner-chips {
+      position: absolute;
+      bottom: 10px; left: 10px;
+      display: flex; gap: 5px;
+      z-index: 2;
+    }
+    .chip {
+      background: rgba(8,14,32,0.65);
+      backdrop-filter: blur(6px);
+      padding: 2px 9px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--cream-2);
+    }
+
+    /* ── Card Body ── */
+    .card-body {
+      padding: 20px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-genre {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #9b7fd4;
+      margin-bottom: 7px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 9px;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    /* ── Card Footer ── */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .price-free   { font-size: 0.9rem; font-weight: 700; color: var(--mint); }
+    .price-dzd    { font-size: 1rem;   font-weight: 800; color: var(--gold); }
+    .price-label  { font-size: 0.68rem; color: var(--muted); margin-top: 1px; }
+
+    /* Coming-soon card dimmed */
+    .card-dimmed { opacity: 0.55; }
+    .card-dimmed:hover { transform: none; border-color: var(--border); box-shadow: none; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  PRICING SECTION
+    ══════════════════════════════════════════════════════════ */
+    .pricing-bg {
+      background: var(--navy-2);
+      border-top:    1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Pricing Card ── */
+    .pricing-card {
+      background: var(--navy-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 34px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.22s, border-color 0.22s;
+    }
+    .pricing-card:hover { transform: translateY(-5px); border-color: var(--border-hover); }
+
+    .pricing-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(160deg, #1c2b52 0%, #12204a 100%);
+      box-shadow: 0 0 50px rgba(242,201,76,0.12);
+    }
+
+    .plan-popular {
+      position: absolute;
+      top: -13px; left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--gold), var(--gold-dim));
+      color: var(--navy);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 18px;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+
+    .plan-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .plan-price {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .plan-price sub { font-size: 1rem; vertical-align: middle; font-family: var(--font-body); }
+
+    .plan-period {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    /* ── Payment badge inside pricing card ── */
+    .payment-badge {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: rgba(242,201,76,0.07);
+      border: 1px solid rgba(242,201,76,0.18);
+      border-radius: var(--radius-sm);
+      padding: 10px 13px;
+      margin-bottom: 20px;
+    }
+    .payment-badge-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .payment-badge-text {
+      font-size: 0.78rem;
+      color: var(--gold-bright);
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .payment-badge-text small {
+      display: block;
+      font-size: 0.71rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    .plan-perks {
+      list-style: none;
+      flex: 1;
+      margin-bottom: 22px;
+    }
+    .plan-perks li {
+      font-size: 0.86rem;
+      color: var(--cream-2);
+      padding: 5px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      line-height: 1.5;
+    }
+    .plan-perks li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.58rem;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .plan-btn { width: 100%; justify-content: center; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  HOW IT WORKS — Payment workflow explainer
+    ══════════════════════════════════════════════════════════ */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      counter-reset: step;
+    }
+
+    .step-card {
+      background: var(--navy-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .step-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      color: var(--navy);
+      font-size: 0.85rem;
+      font-weight: 800;
+      display: grid; place-items: center;
+      margin: 0 auto 16px;
+    }
+
+    .step-icon { font-size: 2rem; margin-bottom: 10px; }
+
+    .step-card h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+
+    .step-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+
+    /* Connector arrow between steps */
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 1.2rem;
+      opacity: 0.5;
+      align-self: center;
+    }
+    @media (max-width: 640px) { .step-arrow { display: none; } }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  PAYMENT MODAL
+       Opens when parent clicks "Buy" on a premium story or plan.
+       This is the ZERO-COST payment workflow.
+    ══════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8,14,32,0.88);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 9000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--navy-3);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius);
+      padding: 36px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 50px var(--gold-glow);
+      transform: scale(0.95) translateY(20px);
+      transition: transform 0.28s ease;
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-close {
+      float: right;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: var(--muted);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--cream); }
+
+    .modal-header { margin-bottom: 22px; overflow: hidden; }
+
+    .modal-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 5px;
+    }
+    .modal-header p { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Payment Method Tabs in modal ── */
+    .payment-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .pay-tab {
+      flex: 1;
+      padding: 12px 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s ease;
+      font-family: var(--font-body);
+    }
+    .pay-tab:hover { border-color: var(--border-hover); }
+    .pay-tab.active {
+      background: rgba(242,201,76,0.10);
+      border-color: var(--gold);
+    }
+    .pay-tab .pay-icon { font-size: 1.6rem; margin-bottom: 5px; }
+    .pay-tab .pay-name { font-size: 0.78rem; font-weight: 700; color: var(--cream-2); }
+    .pay-tab .pay-sub  { font-size: 0.68rem; color: var(--muted); }
+    .pay-tab.active .pay-name { color: var(--gold); }
+
+    /* ── Instruction panels ── */
+    .pay-panel { display: none; }
+    .pay-panel.active { display: block; }
+
+    .instruction-box {
+      background: rgba(242,201,76,0.05);
+      border: 1px solid rgba(242,201,76,0.15);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+
+    .instruction-box h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .instruction-box ol {
+      padding-left: 18px;
+    }
+
+    .instruction-box ol li,
+    .instruction-box p {
+      font-size: 0.84rem;
+      color: var(--cream-2);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    .account-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8,14,32,0.5);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    .account-detail code {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--gold-bright);
+      letter-spacing: 0.5px;
+    }
+    .copy-btn {
+      background: rgba(242,201,76,0.1);
+      border: 1px solid rgba(242,201,76,0.2);
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+      font-family: var(--font-body);
+    }
+    .copy-btn:hover { background: rgba(242,201,76,0.2); }
+
+    /* After-payment form */
+    .send-proof-form { margin-top: 14px; }
+
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid var(--border);
+      color: var(--cream);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+      transition: border-color 0.18s;
+      outline: none;
+    }
+    .form-input:focus   { border-color: var(--gold); }
+    .form-input::placeholder { color: var(--muted); }
+
+    .modal-submit {
+      width: 100%;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .modal-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.55;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  MASCOT ABOUT STRIP
+    ══════════════════════════════════════════════════════════ */
+    .about-strip {
+      background: var(--navy-2);
+      border-top:    1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 56px 24px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .about-owl {
+      width: 110px; height: 110px;
+      background: radial-gradient(circle at 38% 35%, var(--gold-bright), var(--gold-dim));
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 3.2rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 12px rgba(242,201,76,0.06), 0 0 50px rgba(242,201,76,0.25);
+      animation: pulse-moon 4s ease-in-out infinite;
+    }
+
+    .about-text h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .about-text p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 540px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  FOOTER
+    ══════════════════════════════════════════════════════════ */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 52px 24px 36px;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+    .footer-brand span { color: var(--gold); }
+
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* Social media icons row */
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 0.83rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .social-link:hover {
+      border-color: var(--border-hover);
+      color: var(--gold-bright);
+      transform: translateY(-2px);
+      background: rgba(242,201,76,0.06);
+    }
+    .social-link .s-icon { font-size: 1.05rem; }
+
+    /* Payment accepted footer strip */
+    .footer-payments {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .footer-payments-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .fpay-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(242,201,76,0.07);
+      border: 1px solid rgba(242,201,76,0.18);
+      color: var(--gold-bright);
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .footer-links a {
+      font-size: 0.79rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold-bright); }
+
+    .footer-copy {
+      font-size: 0.76rem;
+      color: rgba(122,141,176,0.5);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  UTILITIES
+    ══════════════════════════════════════════════════════════ */
+    .hidden { display: none !important; }
+
+    /* Toast notification (copy feedback) */
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--navy-4);
+      border: 1px solid var(--border-hover);
+      color: var(--gold-bright);
+      padding: 10px 24px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 9999;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ══════════════════════════════════════════════════════════
+       ★  RESPONSIVE
+    ══════════════════════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .section { padding: 56px 18px; }
+      .modal-box { padding: 26px 20px; }
+      .payment-tabs { flex-direction: column; }
+      .about-inner  { gap: 26px; }
+      .cards-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════
+     STAR FIELD CANVAS
+════════════════════════════════════════════════ -->
+<canvas id="starfield"></canvas>
+
+<!-- ════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="logo-mark">🦉</div>
+    <!--
+      ┌─ LOGO SWAP INSTRUCTIONS ────────────────────┐
+      │ 1. Save your logo as "logo.png" in the      │
+      │    same folder as this index.html file.     │
+      │ 2. Delete the <div class="logo-mark"> above │
+      │ 3. Paste this instead:                      │
+      │  <img src="logo.png" alt="Whimzy Nights"    │
+      │       style="height:42px;border-radius:10px">│
+      └─────────────────────────────────────────────┘
+    -->
+    <span class="brand-name">Whimzy<span>Nights</span></span>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#stories">Stories</a></li>
+    <li><a href="#how-it-works">How to Pay</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing" class="nav-cta">✨ Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<header>
+  <div class="hero-moon">
+    <div class="moon-circle">🦉</div>
+    <span class="sparkle">✦</span>
+    <span class="sparkle">⋆</span>
+    <span class="sparkle">✧</span>
+  </div>
+
+  <p class="hero-eyebrow">Magical Bedtime Stories · قصص ليلية سحرية</p>
+
+  <h1 class="hero-headline">
+    Where Every Night<br>Becomes <em>a Story</em>
+  </h1>
+
+  <p class="hero-sub">
+    Cozy, calming tales that turn bedtime from a battle into
+    the most magical moment of the day — for children &amp; families across Algeria.
+  </p>
+
+  <div class="hero-btns">
+    <a href="https://whimzynights.netlify.app" target="_blank" rel="noopener" class="btn btn-mint">
+      📖 Read Free Story Now
+    </a>
+    <a href="#pricing" class="btn btn-outline">⭐ See Plans &amp; Prices</a>
+  </div>
+
+  <div class="trust-row">
+    <span class="trust-chip">🔒 Safe for Kids</span>
+    <span class="trust-chip">🇩🇿 Made for Algeria</span>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     STORY GRID SECTION
+════════════════════════════════════════════════ -->
+<section id="stories">
+  <div class="section">
+
+    <div class="section-title">
+      <h2>Tonight's Stories</h2>
+      <div class="gold-divider"></div>
+      <p>One story live now — more arriving every month ✨</p>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="filter-row">
+      <button class="pill active" data-filter="all">🌙 All Stories</button>
+      <button class="pill" data-filter="free">🎁 Free</button>
+      <button class="pill" data-filter="premium">⭐ Premium</button>
+      <button class="pill" data-filter="age-4-6">Ages 4–6</button>
+      <button class="pill" data-filter="age-6-8">Ages 6–8</button>
+      <button class="pill" data-filter="calming">😴 Calming</button>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- ══════════════════════════════════════
+           CARD 1 — FREE (your real story)
+           ──────────────────────────────────────
+           To update: change the title, desc,
+           emoji, banner colour class, tags.
+           The href links to your real page.
+      ══════════════════════════════════════ -->
+      <article class="story-card" data-type="free" data-tags="age-4-6 age-6-8 calming">
+        <div class="card-banner b-ocean">
+          🦷
+          <span class="badge badge-free">Free</span>
+          <div class="banner-chips">
+            <span class="chip">Ages 4–7</span>
+            <span class="chip">😴 Calming</span>
+            <span class="chip">🎵 Audio</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <span class="card-genre">🦷 Bedtime Routine · Interactive</span>
+          <h3 class="card-title">Brush Those Monsters Away!</h3>
+          <p class="card-desc">
+            Join the fight against sneaky sugar monsters in this musical,
+            interactive adventure that makes brushing teeth the most exciting part of bedtime.
+          </p>
+          <div class="card-footer">
+            <span class="price-free">✓ Free Forever</span>
+            <a href="https://whimzynights.netlify.app"
+               target="_blank" rel="noopener"
+               class="btn btn-mint btn-sm">📖 Read Now</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ══════════════════════════════════════
+           CARD 2 — PREMIUM COMING SOON
+           ──────────────────────────────────────
+           When your next story is ready:
+           1. Remove class "card-dimmed"
+           2. Change title & description
+           3. Change badge-soon → badge-premium
+           4. Change lock-dot to show lock
+           5. Change button to call openModal()
+      ══════════════════════════════════════ -->
+      <article class="story-card premium card-dimmed" data-type="premium" data-tags="age-4-6 age-6-8">
+        <div class="card-banner b-violet">
+          🧙
+          <span class="badge badge-soon">Coming Soon</span>
+          <div class="lock-dot">🔒</div>
+          <div class="banner-chips">
+            <span class="chip">Ages 5–9</span>
+            <span class="chip">🪄 Magic</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <span class="card-genre">🌌 Magic · Adventure</span>
+          <h3 class="card-title" style="font-style:italic; color: var(--muted);">✦ Coming Soon…</h3>
+          <p class="card-desc">
+            A brand-new story is being written under the moonlight.
+            Subscribe to be the first to know when it drops.
+          </p>
+          <div class="card-footer">
+            <div>
+              <div class="price-dzd">300 DZD</div>
+              <div class="price-label">one-time</div>
+            </div>
+            <a href="#pricing" class="btn btn-outline btn-sm">🔔 Notify Me</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- ══════════════════════════════════════
+           CARD 3 — PREMIUM COMING SOON (slot 2)
+      ══════════════════════════════════════ -->
+      <article class="story-card premium card-dimmed" data-type="premium" data-tags="age-6-8 calming">
+        <div class="card-banner b-forest">
+          🌿
+          <span class="badge badge-soon">Coming Soon</span>
+          <div class="lock-dot">🔒</div>
+          <div class="banner-chips">
+            <span class="chip">Ages 3–6</span>
+            <span class="chip">😴 Cozy</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <span class="card-genre">🌿 Nature · Sleepytime</span>
+          <h3 class="card-title" style="font-style:italic; color: var(--muted);">✦ Coming Soon…</h3>
+          <p class="card-desc">
+            Something cozy and green is growing in Whimzy's forest.
+            More magical tales are on their way.
+          </p>
+          <div class="card-footer">
+            <div>
+              <div class="price-dzd">300 DZD</div>
+              <div class="price-label">one-time</div>
+            </div>
+            <a href="#pricing" class="btn btn-outline btn-sm">🔔 Notify Me</a>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /cards-grid -->
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     HOW IT WORKS  (payment workflow explainer)
+════════════════════════════════════════════════ -->
+<section id="how-it-works" class="about-strip">
+  <div class="section" style="padding-top:0; padding-bottom:0;">
+
+    <div class="section-title">
+      <h2>How to Get Premium Access</h2>
+      <div class="gold-divider"></div>
+      <p>كيف تشتري القصة — Simple 4-step process, no account needed yet</p>
+    </div>
+
+    <div class="steps-grid">
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-icon">🛍️</div>
+        <h4>Choose Your Plan</h4>
+        <p>Pick a single story (300 DZD) or a monthly/annual subscription below.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-icon">💳</div>
+        <h4>Send Payment</h4>
+        <p>Transfer via <strong style="color:var(--gold)">Edahabia</strong> (البطاقة الذهبية) or <strong style="color:var(--gold)">Baridimob</strong> to our CCP account shown in the payment window.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-icon">📸</div>
+        <h4>Send Your Proof</h4>
+        <p>Take a screenshot of the transfer confirmation and send it to us on Instagram or Email with your name.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-icon">🔓</div>
+        <h4>Get Your Link</h4>
+        <p>We verify &amp; send you the private story link (or password) within <strong style="color:var(--gold)">a few hours</strong> — usually faster!</p>
+      </div>
+
+    </div><!-- /steps-grid -->
+
+    <div style="text-align:center; margin-top:36px;">
+      <p style="font-size:0.85rem; color:var(--muted); margin-bottom:16px;">
+        Questions? Reach us directly:
+      </p>
+      <a href="https://www.instagram.com/whimzynights?igsh=MWZzMjVsa3VqcjhhMA==" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="display:inline-flex; margin: 0 auto;">
+        📩 Message on Instagram
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     PRICING SECTION
+════════════════════════════════════════════════ -->
+<section id="pricing" class="pricing-bg">
+  <div class="section">
+
+    <div class="section-title">
+      <h2>Simple, Clear Pricing</h2>
+      <div class="gold-divider"></div>
+      <p>All prices in Algerian Dinar (DZD) · نقبل البطاقة الذهبية وبريدي موب</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- ── FREE TIER ── -->
+      <div class="pricing-card">
+        <span class="plan-name">🎁 Free</span>
+        <div class="plan-price">0 <sub>DZD</sub></div>
+        <div class="plan-period">Always free — no payment needed</div>
+
+        <!-- Payment badge (greyed out since free) -->
+        <div class="payment-badge" style="opacity:0.5;">
+          <span class="payment-badge-icon">✓</span>
+          <div class="payment-badge-text">
+            No payment required
+            <small>Just click and read instantly</small>
+          </div>
+        </div>
+
+        <ul class="plan-perks">
+          <li>Access to all free stories</li>
+          <li>"Brush Those Monsters Away!" right now</li>
+          <li>New free story every season</li>
+          <li>No account or email needed</li>
+        </ul>
+        <a href="https://whimzynights.netlify.app" target="_blank" rel="noopener"
+           class="btn btn-mint plan-btn">📖 Read Free Story</a>
+      </div>
+
+      <!-- ── SINGLE STORY ── -->
+      <div class="pricing-card">
+        <span class="plan-name">⭐ Single Story</span>
+        <div class="plan-price">300 <sub>DZD</sub></div>
+        <div class="plan-period">One-time · own it forever</div>
+
+        <div class="payment-badge">
+          <span class="payment-badge-icon">💳</span>
+          <div class="payment-badge-text">
+            نقبل: البطاقة الذهبية &amp; بريدي موب
+            <small>Edahabia Card &amp; Baridimob accepted</small>
+          </div>
+        </div>
+
+        <ul class="plan-perks">
+          <li>Permanent access to one premium story</li>
+          <li>No subscription required</li>
+          <li>Perfect for trying premium content</li>
+          <li>Link sent within a few hours of payment</li>
+        </ul>
+        <!--
+          data-plan / data-price are read by the JS modal.
+          Update these values if your price changes.
+        -->
+        <button class="btn btn-outline plan-btn"
+                onclick="openModal('Single Story', '300 DZD')">
+          🔓 Buy Story
+        </button>
+      </div>
+
+      <!-- ── MONTHLY — FEATURED ── -->
+      <div class="pricing-card featured">
+        <span class="plan-popular">✦ Most Popular</span>
+        <span class="plan-name">🌙 Monthly Magic</span>
+        <div class="plan-price">1,999 <sub>DZD</sub></div>
+        <div class="plan-period">Per month · cancel anytime</div>
+
+        <div class="payment-badge">
+          <span class="payment-badge-icon">💳</span>
+          <div class="payment-badge-text">
+            نقبل: البطاقة الذهبية &amp; بريدي موب
+            <small>Edahabia Card &amp; Baridimob accepted</small>
+          </div>
+        </div>
+
+        <ul class="plan-perks">
+          <li>All current premium stories</li>
+          <li>Every new story the moment it drops</li>
+          <li>One parent account</li>
+          <li>Priority access to new releases</li>
+          <li>Cancel anytime — no lock-in</li>
+        </ul>
+        <button class="btn btn-gold plan-btn"
+                onclick="openModal('Monthly Subscription', '1,999 DZD/month')">
+          ✨ Subscribe Monthly
+        </button>
+      </div>
+
+      <!-- ── ANNUAL ── -->
+      <div class="pricing-card">
+        <span class="plan-name">🌟 Annual · Save 2 Months</span>
+        <div class="plan-price">16,999 <sub>DZD</sub></div>
+        <div class="plan-period">Per year · ~1,416 DZD/month</div>
+
+        <div class="payment-badge">
+          <span class="payment-badge-icon">💳</span>
+          <div class="payment-badge-text">
+            نقبل: البطاقة الذهبية &amp; بريدي موب
+            <small>Edahabia Card &amp; Baridimob accepted</small>
+          </div>
+        </div>
+
+        <ul class="plan-perks">
+          <li>Everything in Monthly plan</li>
+          <li>Save the cost of 2 full months</li>
+          <li>Best value for committed readers</li>
+          <li>One parent account</li>
+        </ul>
+        <button class="btn btn-outline plan-btn"
+                onclick="openModal('Annual Subscription', '16,999 DZD/year')">
+          🌟 Subscribe Annually
+        </button>
+      </div>
+
+    </div><!-- /pricing-grid -->
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     MASCOT / ABOUT STRIP
+════════════════════════════════════════════════ -->
+<section>
+  <div class="about-inner">
+    <div class="about-owl">🦉</div>
+    <div class="about-text">
+      <h3>Meet Whimzy the Owl 🌙</h3>
+      <p>
+        Whimzy watches over every story — making sure each tale is calm enough to soothe,
+        magical enough to wonder, and warm enough to feel like home.
+        We're an independent Algerian creator making stories with real care,
+        for real families. No ads. No noise. Just bedtime magic.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-brand">Whimzy<span>Nights</span> 🌙</div>
+  <p class="footer-tagline">Magical bedtime stories for children in Algeria</p>
+
+  <!-- Social Media Links -->
+  <div class="social-row">
+    <a href="https://www.youtube.com/@whimzynights"
+       target="_blank" rel="noopener" class="social-link">
+      <span class="s-icon">▶️</span> YouTube
+    </a>
+    <a href="https://www.tiktok.com/@whimzynights?_r=1&_t=ZS-96o2aAsu9R7"
+       target="_blank" rel="noopener" class="social-link">
+      <span class="s-icon">🎵</span> TikTok
+    </a>
+    <a href="https://www.instagram.com/whimzynights?igsh=MWZzMjVsa3VqcjhhMA=="
+       target="_blank" rel="noopener" class="social-link">
+      <span class="s-icon">📸</span> Instagram
+    </a>
+    <a href="mailto:zaiteralaakawther@gmail.com" class="social-link">
+      <span class="s-icon">✉️</span> Email Us
+    </a>
+  </div>
+
+  <!-- Accepted Payment Methods -->
+  <div class="footer-payments">
+    <span class="footer-payments-label">Accepted Payments / طرق الدفع المقبولة:</span>
+    <span class="fpay-chip">💳 البطاقة الذهبية (Edahabia)</span>
+    <span class="fpay-chip">📱 بريدي موب (Baridimob)</span>
+  </div>
+
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Child Safety</a>
+    <a href="mailto:zaiteralaakawther@gmail.com">Contact</a>
+  </div>
+
+  <p class="footer-copy">
+    © 2025 Whimzy Nights · All accounts are parent accounts only.
+    We never collect data directly from children.
+  </p>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     PAYMENT MODAL
+     This is the heart of the zero-cost payment flow.
+     Parents see their payment options, your CCP
+     account number, and a form to send proof.
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="payModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      <h3 id="modal-title">Complete Your Purchase</h3>
+      <p id="modal-subtitle">Choose your payment method below</p>
+    </div>
+
+    <!-- Payment Method Tabs -->
+    <div class="payment-tabs">
+      <button class="pay-tab active" onclick="switchTab('edahabia', this)">
+        <div class="pay-icon">💳</div>
+        <div class="pay-name">Edahabia</div>
+        <div class="pay-sub">البطاقة الذهبية</div>
+      </button>
+      <button class="pay-tab" onclick="switchTab('baridimob', this)">
+        <div class="pay-icon">📱</div>
+        <div class="pay-name">Baridimob</div>
+        <div class="pay-sub">بريدي موب</div>
+      </button>
+    </div>
+
+    <!-- ── EDAHABIA PANEL ── -->
+    <div class="pay-panel active" id="panel-edahabia">
+      <div class="instruction-box">
+        <h4>💳 Edahabia — How to Pay</h4>
+        <ol>
+          <li>Open your <strong>Edahabia app</strong> or go to any <strong>Algerie Poste</strong> counter.</li>
+          <li>Select <strong>Virement CCP</strong> (CCP Transfer).</li>
+          <li>Enter the CCP account number below and the exact amount.</li>
+          <li>Confirm the transfer and take a <strong>screenshot</strong> of the confirmation.</li>
+        </ol>
+
+        <!--
+          ┌──────────────────────────────────────────┐
+          │  IMPORTANT: Replace the account number   │
+          │  below with YOUR real CCP / RIP number.  │
+          │  You get this from your Algerie Poste    │
+          │  account (livret or CCP booklet).        │
+          └──────────────────────────────────────────┘
+        -->
+        <div class="account-detail">
+          <div>
+            <div style="font-size:0.72rem; color:var(--muted); margin-bottom:3px;">CCP Account Number</div>
+            <code id="ccp-number">XXXXXX.XX  ←  Replace with yours</code>
+          </div>
+          <button class="copy-btn" onclick="copyText('ccp-number')">Copy</button>
+        </div>
+      </div>
+
+      <!-- Proof submission form -->
+      <div class="send-proof-form">
+        <label class="form-label" for="email-edahabia">Your Email or WhatsApp</label>
+        <input class="form-input" id="email-edahabia" type="email"
+               placeholder="your@email.com or 05xxxxxxxx">
+
+        <label class="form-label" for="name-edahabia">Your Name (as on transfer)</label>
+        <input class="form-input" id="name-edahabia" type="text"
+               placeholder="Full name used in the transfer">
+
+        <!--
+          This button opens an email to you with the form details pre-filled.
+          Replace "zaiteralaakawther@gmail.com" with your actual email below.
+        -->
+        <button class="btn btn-gold modal-submit"
+                onclick="sendProofByEmail('edahabia')">
+          📧 Send Payment Proof by Email
+        </button>
+
+        <p style="text-align:center; margin-top:10px; font-size:0.8rem; color:var(--muted);">— or —</p>
+
+        <a href="https://www.instagram.com/whimzynights?igsh=MWZzMjVsa3VqcjhhMA=="
+           target="_blank" rel="noopener"
+           class="btn btn-outline modal-submit" style="margin-top:6px;">
+          📸 Send Screenshot on Instagram DM
+        </a>
+      </div>
+    </div>
+
+    <!-- ── BARIDIMOB PANEL ── -->
+    <div class="pay-panel" id="panel-baridimob">
+      <div class="instruction-box">
+        <h4>📱 Baridimob — How to Pay</h4>
+        <ol>
+          <li>Open the <strong>Baridimob app</strong> on your phone.</li>
+          <li>Tap <strong>Virement</strong> → <strong>Vers un compte CCP</strong>.</li>
+          <li>Enter the CCP number below and the exact amount for your plan.</li>
+          <li>Confirm with your PIN and take a <strong>screenshot</strong> of success.</li>
+        </ol>
+        <div class="account-detail">
+          <div>
+            <div style="font-size:0.72rem; color:var(--muted); margin-bottom:3px;">CCP Account Number</div>
+            <code id="ccp-baridimob">XXXXXX.XX  ←  Replace with yours</code>
+          </div>
+          <button class="copy-btn" onclick="copyText('ccp-baridimob')">Copy</button>
+        </div>
+      </div>
+
+      <div class="send-proof-form">
+        <label class="form-label" for="email-baridimob">Your Email or WhatsApp</label>
+        <input class="form-input" id="email-baridimob" type="email"
+               placeholder="your@email.com or 05xxxxxxxx">
+
+        <label class="form-label" for="name-baridimob">Your Name (as on transfer)</label>
+        <input class="form-input" id="name-baridimob" type="text"
+               placeholder="Full name used in the transfer">
+
+        <button class="btn btn-gold modal-submit"
+                onclick="sendProofByEmail('baridimob')">
+          📧 Send Payment Proof by Email
+        </button>
+
+        <p style="text-align:center; margin-top:10px; font-size:0.8rem; color:var(--muted);">— or —</p>
+
+        <a href="https://www.instagram.com/whimzynights?igsh=MWZzMjVsa3VqcjhhMA=="
+           target="_blank" rel="noopener"
+           class="btn btn-outline modal-submit" style="margin-top:6px;">
+          📸 Send Screenshot on Instagram DM
+        </a>
+      </div>
+    </div>
+
+    <p class="modal-note">
+      After we verify your payment, you'll receive the story link within a few hours.
+      <br>⏱️ Usually faster — we check messages regularly!
+    </p>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">✓ Copied to clipboard!</div>
+
+<!-- ════════════════════════════════════════════════
+     JAVASCRIPT
+     • Star field canvas animation
+     • Filter pills
+     • Payment modal open/close/tab switching
+     • Copy-to-clipboard
+     • Email proof sender
+════════════════════════════════════════════════ -->
+<script>
+
+/* ──────────────────────────────────────────
+   1.  STAR FIELD
+   Draws 180 twinkling stars on the canvas.
+   No external library needed.
+────────────────────────────────────────── */
+(function () {
+  const canvas = document.getElementById('starfield');
+  const ctx    = canvas.getContext('2d');
+  let stars    = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = document.body.scrollHeight;
+  }
+
+  function makeStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height,
+        r:     Math.random() * 1.3 + 0.25,
+        phase: Math.random() * Math.PI * 2,
+        spd:   Math.random() * 0.006 + 0.003,
+      });
+    }
+  }
+
+  function draw(ts) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const t = ts * 0.001;
+    stars.forEach(s => {
+      const a = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(s.phase + t * s.spd * 60));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(242,215,140,${a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  makeStars(180);
+  requestAnimationFrame(draw);
+
+  window.addEventListener('resize', () => { resize(); makeStars(180); });
+})();
+
+
+/* ──────────────────────────────────────────
+   2.  STORY FILTER PILLS
+   Clicking a pill shows/hides cards.
+────────────────────────────────────────── */
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    // Set active pill
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+
+    const filter = pill.getAttribute('data-filter');
+
+    document.querySelectorAll('.story-card').forEach(card => {
+      if (filter === 'all') {
+        card.classList.remove('hidden');
+        return;
+      }
+      const type = card.getAttribute('data-type')  || '';
+      const tags = card.getAttribute('data-tags')   || '';
+      const show = (type === filter) || tags.includes(filter);
+      card.classList.toggle('hidden', !show);
+    });
+  });
+});
+
+
+/* ──────────────────────────────────────────
+   3.  PAYMENT MODAL
+   openModal() is called by the pricing
+   card buttons (see onclick="openModal(…)")
+────────────────────────────────────────── */
+let currentPlan  = '';
+let currentPrice = '';
+
+function openModal(planName, price) {
+  currentPlan  = planName;
+  currentPrice = price;
+
+  document.getElementById('modal-title').textContent    = 'Pay for: ' + planName;
+  document.getElementById('modal-subtitle').textContent = 'Amount: ' + price + ' — choose your payment method';
+
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow = 'hidden'; // prevent page scrolling when modal open
+}
+
+function closeModal() {
+  document.getElementById('payModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close when clicking outside the modal box
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Close with Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+
+/* ──────────────────────────────────────────
+   4.  PAYMENT TAB SWITCHER (inside modal)
+────────────────────────────────────────── */
+function switchTab(method, btn) {
+  // Update tab active state
+  document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Show correct panel
+  document.querySelectorAll('.pay-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + method).classList.add('active');
+}
+
+
+/* ──────────────────────────────────────────
+   5.  SEND PROOF BY EMAIL
+   Opens the parent's mail app with a
+   pre-filled email so they can attach
+   their payment screenshot.
+
+   ★ IMPORTANT: Replace the email below
+     with YOUR actual email address.
+────────────────────────────────────────── */
+const OWNER_EMAIL = 'zaiteralaakawther@gmail.com'; // ← your email here
+
+function sendProofByEmail(method) {
+  const suffix  = method === 'edahabia' ? 'edahabia' : 'baridimob';
+  const name    = document.getElementById('name-'  + suffix).value.trim();
+  const contact = document.getElementById('email-' + suffix).value.trim();
+
+  if (!name || !contact) {
+    alert('Please fill in your name and email/WhatsApp before continuing.');
+    return;
+  }
+
+  const subject = encodeURIComponent('Whimzy Nights Payment Proof — ' + currentPlan);
+  const body    = encodeURIComponent(
+    'Hello Whimzy Nights,\n\n' +
+    'I have completed payment for: ' + currentPlan + '\n' +
+    'Amount: ' + currentPrice + '\n' +
+    'Payment method: ' + (method === 'edahabia' ? 'Edahabia (البطاقة الذهبية)' : 'Baridimob (بريدي موب)') + '\n\n' +
+    'My name: ' + name + '\n' +
+    'My contact (email/phone): ' + contact + '\n\n' +
+    '[ Please attach your payment screenshot to this email ]\n\n' +
+    'Thank you!'
+  );
+
+  window.location.href = 'mailto:' + OWNER_EMAIL + '?subject=' + subject + '&body=' + body;
+}
+
+
+/* ──────────────────────────────────────────
+   6.  COPY TO CLIPBOARD  (CCP number)
+────────────────────────────────────────── */
+function copyText(elementId) {
+  const el   = document.getElementById(elementId);
+  const text = el.textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✓ Copied!');
+  }).catch(() => {
+    // Fallback for older browsers
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    showToast('✓ Copied!');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+</script>
+</body>
+</html>
